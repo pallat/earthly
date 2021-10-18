@@ -11,7 +11,7 @@ buildkitd:
             ARG BUILDKIT_BASE_IMAGE=$BUILDKIT_PROJECT+build
         END
     ELSE
-        ARG BUILDKIT_BASE_IMAGE=github.com/earthly/buildkit:199ad6a5c213d2a6937ced9e2b52b5b57e0a3a37+build
+        ARG BUILDKIT_BASE_IMAGE=github.com/earthly/buildkit:661c1d9c53ac93ab90ef1de68acf676aa4fe43a9+build
     END
     FROM $BUILDKIT_BASE_IMAGE
     RUN echo "@edge-community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
@@ -60,8 +60,15 @@ buildkitd:
 
 update-buildkit:
     LOCALLY
-    ARG BUILDKIT_BRANCH=earthly-main
-    RUN buildkit_sha1=$(git ls-remote --refs -q https://github.com/earthly/buildkit.git "$BUILDKIT_BRANCH" | awk 'BEGIN { FS = "[ \t]+" } {print $1}') && \
-        test ! -z "$buildkit_sha1" && \
-        echo "pinning github.com/earthly/buildkit@${BUILDKIT_BRANCH} to reference git sha1: $buildkit_sha1" && \
+    ARG BUILDKIT_GIT_SHA=earthly-main
+    RUN set -e; \
+        if [ "$(echo -n $BUILDKIT_GIT_SHA | wc -c)" = 40 ]; then \
+            echo "pinning github.com/earthly/buildkit to reference git sha1: $BUILDKIT_GIT_SHA"; \
+            buildkit_sha1="$BUILDKIT_GIT_SHA"; \
+        else \
+            echo "looking up branch $BUILDKIT_GIT_SHA"; \
+            buildkit_sha1=$(git ls-remote --refs -q https://github.com/earthly/buildkit.git "$BUILDKIT_GIT_SHA" | awk 'BEGIN { FS = "[ \t]+" } {print $1}'); \
+            echo "pinning github.com/earthly/buildkit@${BUILDKIT_BRANCH} to reference git sha1: $buildkit_sha1"; \
+        fi && \
+        test -n "$buildkit_sha1" && \
         sed -i 's/\(^[ \t]\+ARG BUILDKIT_BASE_IMAGE=github.com\/earthly\/buildkit\).*/\1:'$buildkit_sha1'+build/g' Earthfile
