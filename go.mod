@@ -8,7 +8,7 @@ require (
 	github.com/armon/circbuf v0.0.0-20190214190532-5111143e8da2
 	github.com/containerd/containerd v1.5.3
 	github.com/creack/pty v1.1.11
-	github.com/docker/distribution v2.7.1+incompatible
+	github.com/docker/distribution v2.8.0+incompatible
 	github.com/docker/docker v20.10.7+incompatible
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/color v1.9.0
@@ -28,7 +28,6 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
-	github.com/tetratelabs/multierror v1.1.0
 	github.com/tonistiigi/fsutil v0.0.0-20210609172227-d72af97c0eaf
 	github.com/urfave/cli/v2 v2.3.0
 	github.com/wille/osutil v0.0.0-20201124133013-e7a03eb09286
